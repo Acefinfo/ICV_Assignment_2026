@@ -21,16 +21,11 @@ end
 %% Load image
 img = imread(imagePath);
 img = im2double(img);
-fprintf('✓ Image loaded\n');
 
 %% Bilateral Filtering
-fprintf('Applying bilateral filtering...\n');
 bilateral_filtered = imbilatfilt(img, 15, 0.1);
-fprintf('✓ Bilateral filter applied\n');
 
 %% CLAHE Contrast Enhancement
-fprintf('Enhancing contrast using CLAHE...\n');
-
 lab = rgb2lab(bilateral_filtered);
 L = lab(:,:,1) / 100;
 
@@ -39,25 +34,20 @@ L_enhanced = adapthisteq(L, 'ClipLimit', 0.02, 'NumTiles', [8 8]);
 lab(:,:,1) = L_enhanced * 100;
 contrast_enhanced = lab2rgb(lab);
 
-fprintf('✓ Contrast enhanced\n');
 
 %% Sharpening
-fprintf('Sharpening...\n');
-
 sharpened = imsharpen(contrast_enhanced, ...
     'Radius', 1.2, ...
     'Amount', 1.0, ...
     'Threshold', 0.02);
 
 sharpened = min(max(sharpened, 0), 1);
-fprintf('✓ Sharpening applied\n');
 
 %% Convert for metrics
 orig_uint8 = uint8(img * 255);
 sharp_uint8 = uint8(sharpened * 255);
 
 %% Metrics
-fprintf('Computing metrics...\n');
 
 % MSE
 mse = mean((double(orig_uint8(:)) - double(sharp_uint8(:))).^2);
@@ -135,9 +125,3 @@ imwrite(uint8(sharpened * 255), fullfile(outputFolder, 'Image5_Enhanced.jpg'));
 saveas(figure(1), fullfile(outputFolder, 'Processing_Stages.png'));
 saveas(figure(2), fullfile(outputFolder, 'Histogram.png'));
 saveas(figure(3), fullfile(outputFolder, 'Before_After.png'));
-
-%% Save metrics to file
-
-fprintf('PSNR: %.2f dB\n', psnr_val);
-fprintf('SSIM: %.4f\n', ssim_val);
-fprintf('Laplacian Variance: %.2f\n', laplacian_var);
