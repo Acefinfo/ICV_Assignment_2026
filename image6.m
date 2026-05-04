@@ -1,3 +1,10 @@
+%==========================================================================
+% IMAGE 6: COLOR CORRECTION AND IMAGE ENHANCEMENT PIPELINE
+%==========================================================================
+% Problem: Blur, noise, low contrast, drab colors
+% Solution: Gamma + white balance + color analysis
+%==========================================================================
+ 
 clc; clear; close all;
 
 %% Path setup
